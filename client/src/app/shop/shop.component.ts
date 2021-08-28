@@ -32,7 +32,7 @@ export class ShopComponent implements OnInit {
 
   getProducts() {
     this.shopService
-      .getProduct(this.shopParams)
+      .getProducts(this.shopParams)
       .subscribe(
         (response) => {
           this.products = response.data;

@@ -2,6 +2,7 @@ using System.Linq;
 using API.Errors;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRespository<>)));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.Configure<ApiBehaviorOptions>(options =>
@@ -28,10 +30,10 @@ namespace API.Extensions
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-            services.AddScoped<IBasketRepository,BasketRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             return services;
         }
-        
+
     }
 }

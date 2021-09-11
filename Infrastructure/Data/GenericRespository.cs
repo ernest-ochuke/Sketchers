@@ -49,6 +49,20 @@ namespace Infrastructure.Data
             .GetQuery(e_context.Set<T>().AsQueryable(), spec);
         }
 
+        public void Add(T entity)
+        {
+            e_context.Set<T>().Add(entity);
+        }
 
+        public void Udpate(T entity)
+        {
+           e_context.Set<T>().Attach(entity);
+           e_context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+           e_context.Set<T>().Remove(entity);
+        }
     }
 }

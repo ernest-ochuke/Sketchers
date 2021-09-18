@@ -12,10 +12,12 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRespository<>)));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderService,OrderService>();
+             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.Configure<ApiBehaviorOptions>(options =>
             {

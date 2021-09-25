@@ -7,5 +7,7 @@ namespace Core.Interfaces
     {
         Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive);
         Task<string> GetCachedResponse(string cacheKey);
+
+        Task<string> GetCachedResponseAsync(string cacheKey);
     }
 }

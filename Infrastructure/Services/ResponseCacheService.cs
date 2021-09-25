@@ -36,5 +36,17 @@ namespace Infrastructure.Services
 
             return cachedResponse;
         }
+
+        public async Task<string> GetCachedResponseAsync(string cacheKey)
+        {
+           var cachedResponse = await _database.StringGetAsync(cacheKey);
+
+            if (cachedResponse.IsNullOrEmpty)
+            {
+                return null;
+            }
+
+            return cachedResponse;
+        }
     }
 }

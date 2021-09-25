@@ -15,8 +15,8 @@ namespace API.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly string _whSecret;
-        private readonly ILogger<PaymentsController> _logger;
-        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger,
+        private readonly ILogger<IPaymentService> _logger;
+        public PaymentsController(IPaymentService paymentService, ILogger<IPaymentService> logger,
             IConfiguration config)
         {
             _logger = logger;
@@ -39,7 +39,7 @@ namespace API.Controllers
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
-            var stripeEvent = Stripe.EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], _whSecret);
+            var stripeEvent = Stripe.EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], _whSecret,throwOnApiVersionMismatch:false);
 
             Stripe.PaymentIntent intent;
             Order order;

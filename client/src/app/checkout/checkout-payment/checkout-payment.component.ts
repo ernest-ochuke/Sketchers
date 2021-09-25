@@ -85,46 +85,37 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  submitOrder() {
+  async submitOrder() {
+    this.loading = true;
     const basket = this.basketService.getCurrentBasketValue();
-    const orderToCreate = this.getOrderToCreate(basket);
-
-    this.checkoutService.createOrder(orderToCreate).subscribe(
-      (order: IOrder) => {
-        this.toastr.success('Order Created Succesfully');
-        this.stripe
-          .confirmCardPayment(basket.clientSecret, {
-            payment_method: {
-              card: this.cardNumber,
-              billing_details: {
-                name: this.checkoutForm.get('paymentForm').get('nameOnCard')
-                  .value,
-              },
-            },
-          })
-          .then((result) => {
-            console.log(result);
-            if (result.paymentIntent) {
-              this.basketService.deleteLocalBasket(basket.id);
-              const navigationExtras: NavigationExtras = { state: order };
-              this.router.navigate(['checkout/success'], navigationExtras);
-            }else{
-              this.toastr.error('Payment Error');
-            }
-          });
-      },
-      (error) => {
-        this.toastr.error(error);
+    try {
+      const createdOrder = await this.createOrder(basket);
+      const paymentResult = await this.confirmPaymentWithStripe(basket);
+      // if(basket.items.length < 1)
+      // {
+      //   this.basketService.deleteLocalBasket(basket.id);
+      // }
+      if (paymentResult.paymentIntent) {
+        this.basketService.deleteBasket(basket);
+        const navigationExtras: NavigationExtras = { state: createdOrder };
+        this.router.navigate(['checkout/success'], navigationExtras);
+      } else {
+        this.toastr.error(paymentResult.error.message);
 
       }
-    );
+      this.loading = false;
+    } catch (error) {
+      console.log(error);
+      this.loading = false;
+    }
   }
+
   private async confirmPaymentWithStripe(basket) {
     return this.stripe.confirmCardPayment(basket.clientSecret, {
       payment_method: {
         card: this.cardNumber,
         billing_details: {
-          name: this.checkoutForm.get('paymentForm').get('nameOnCard').value,
+          name: this.checkoutForm.get('paymentForm').get('nameOnCard').value
         },
       },
     });
@@ -139,7 +130,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
       deliveryMethodId: +this.checkoutForm
         .get('deliveryForm')
         .get('deliveryMethod').value,
-      shipToAddress: this.checkoutForm.get('addressForm').value,
+      shipToAddress: this.checkoutForm.get('addressForm').value
     };
   }
 }

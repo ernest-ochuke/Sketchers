@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
@@ -17,12 +18,13 @@ namespace Infrastructure.Data
         {
             try
             {
+                var path  = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 if (!context.ProductBrands.Any())
                 {
-                    context.Database.OpenConnection();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] ON");
+                    // context.Database.OpenConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] ON");
                     var bradsData =
-                        File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
+                        File.ReadAllText(path + @"/Data/SeedData/brands.json");
 
                     var brands = JsonConvert.DeserializeObject<List<ProductBrand>>(bradsData);
 
@@ -31,16 +33,16 @@ namespace Infrastructure.Data
                         context.ProductBrands.Add(item);
                     }
                     await context.SaveChangesAsync();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] OFF");
-                    context.Database.CloseConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] OFF");
+                    // context.Database.CloseConnection();
                 }
 
                 if (!context.ProductTypes.Any())
                 {
-                    context.Database.OpenConnection();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductTypes] ON");
+                    // context.Database.OpenConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductTypes] ON");
                     var typesData =
-                        File.ReadAllText("../Infrastructure/Data/SeedData/types.json");
+                        File.ReadAllText(path + @"/Data/SeedData/types.json");
 
                     var types = JsonConvert.DeserializeObject<List<ProductType>>(typesData);
 
@@ -49,14 +51,14 @@ namespace Infrastructure.Data
                         context.ProductTypes.Add(item);
                     }
                     await context.SaveChangesAsync();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductTypes] OFF");
-                    context.Database.CloseConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductTypes] OFF");
+                    // context.Database.CloseConnection();
                 }
                 if (!context.Products.Any())
                 {
                    
                     var productsData =
-                        File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
+                        File.ReadAllText(path + @"/Data/SeedData/products.json");
                     var logger = loggerFactory.CreateLogger<StoreContextSeed>();
 
                     //  var products = JsonSerializer.Deserialize<List<Product>>(productsData);
@@ -73,10 +75,10 @@ namespace Infrastructure.Data
                 {
 
 
-                    context.Database.OpenConnection();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[DeliveryMethods] ON");
+                    // context.Database.OpenConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[DeliveryMethods] ON");
                     var dmData =
-                        File.ReadAllText("../Infrastructure/Data/SeedData/delivery.json");
+                        File.ReadAllText(path + @"/Data/SeedData/delivery.json");
 
                     var methods = JsonConvert.DeserializeObject<List<DeliveryMethod>>(dmData);
 
@@ -89,8 +91,8 @@ namespace Infrastructure.Data
                         context.DeliveryMethods.Add(method);
                     }
                     await context.SaveChangesAsync();
-                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[DeliveryMethods] OFF");
-                    context.Database.CloseConnection();
+                    // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[DeliveryMethods] OFF");
+                    // context.Database.CloseConnection();
                 }
             }
             catch (Exception ex)

@@ -17,17 +17,13 @@ deliveryMethods: IDeliveryMethod[];
   ngOnInit(): void {
     this.checkoutService.getDeliveryMethods().subscribe((dm:IDeliveryMethod[])=>{
       this.deliveryMethods = dm;
-      console.log("from delviery component")
-      console.log(this.deliveryMethods);
-
     }, error =>{
       console.log(error);
     });
   }
   setShippingPrice(deliveryMethod : IDeliveryMethod){
       this.basketService.setShippingPrice(deliveryMethod);
-      console.log("set delivery Method");
-      console.log(deliveryMethod);
+
   }
 
 }
